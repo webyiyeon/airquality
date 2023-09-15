@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>한국 대기질 지도</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+  </head>
+  <body>
+    <h3>한국 대기질 지도</h3>
+    <div>
+      <button onclick="showCAI()">실시간 대기정보</button>
+      <button onclick="showPredict()">오늘/내일/모레 대기정보</button>
+      <button disabled>실시간 공간분포</button>
+    </div>
+    <div id="container">
+    <div id="map">
+      <div id="floating-box">
+        <h4>통합 대기질 지수(CAI) 범례</h4>
+        <p>
+          <span class='legend good'> </span>좋음(0 ~ 50) <br>
+          <span class='legend average'></span>보통(51 ~ 100) <br>
+          <span class='legend bad'></span>나쁨(101 ~ 250) <br>
+          <span class='legend verybad'></span>매우나쁨(251 ~ ) <br> 
+          <span class='legend none'></span>데이터 없음
+        </p>
+      </div>
+    </div>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
+    <script>
+      function jsonParsing(str){
+        str = str.replace(/None/g, "null");
+        str = str.replace(/'/g, '"');
+        try {
+          str = JSON.parse(str);
+          return str;
+        } catch (error) {
+          console.error("JSON 파싱 오류:", error);
+        }
+      };
+      
+      var city_dist = "{{city_dist|safe}}";
+      city_dist = jsonParsing(city_dist);
+
+      var air_quality = "{{air_quality|safe}}";
+      air_quality = jsonParsing(air_quality);
+
+      var predict = "{{predict|safe}}";
+      predict = jsonParsing(predict);
+  
+      var inform = "{{inform|safe}}";
+      inform = jsonParsing(inform);
+    </script>
+    <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+
+  </body>
+</html>

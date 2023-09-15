@@ -1,0 +1,192 @@
+/*
+Copyright (c) 2021 Kil Hyung-jin, with Reserved Font Name Pretendard.
+https://github.com/orioncactus/pretendard
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+*/
+
+@font-face {
+	font-family: 'Pretendard Variable';
+	font-weight: 45 920;
+	font-style: normal;
+	font-display: swap;
+	src: url('././font/PretendardVariable.woff2') format('woff2-variations');
+}
+
+.leaflet-popup-content-wrapper{
+    padding: 10px;
+    /* width: 200px; */
+}
+.leaflet-popup-content{
+    width: 100%;
+}
+#container{
+    width: 100%;
+    height: 100%;
+}
+#map {
+    height: 800px;
+    width: 100%;
+}
+table {
+    width: 100%;
+    border-top: 1px solid #444444;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+th, td {
+    border-bottom: 1px solid #444444;
+    padding: 5px;
+}
+.station_dist{
+    width: 100%;
+    text-align: center;
+}
+/* th:first-child, td:first-child {
+    border-left: none;
+} */
+
+.custom-cluster {
+    padding: 5px; 
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+.cluster_text {
+    width: 40px;
+    text-align: center;
+    word-wrap: break-word;
+    font-size: 11px;
+    font-weight: 400;
+    margin: auto;
+}
+.cluster_text>span{
+    font-size: 14px;
+    font-family: 800;
+}
+.custom-cluster:hover{
+    border: 1px solid #202020;
+    margin: 0;
+}
+.custom-marker {
+    padding: 5px;
+    /* box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.2); */
+    /* border-radius: 100%; */
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.custom-marker:hover{
+    border: 1px solid #202020;
+    margin: 0;
+}
+.marker_text{
+    width: 60px;
+    text-align: center;
+    word-wrap: break-word;
+    font-size: 11px;
+    font-weight: 400;
+    margin: auto;
+}
+.marker_text>span{
+    font-size: 14px;
+    font-family: 800;
+}
+.marker-red {
+    background-color: #fa3a38;
+    border: 1px solid #f0f0f0;
+    color: #202020;
+}
+.marker-yellow {
+    background-color: #FFE26F;
+    border: 1px solid #f0f0f0;
+    color: #202020;
+}
+.marker-green {
+    /* background-color: #00B8A9; */
+    background-color: #00B8A9;
+    border: 1px solid #f0f0f0;
+    color: #202020;
+}
+.marker-blue {
+    background-color: #118DF0;
+    border: 1px solid #f0f0f0;
+    color: #202020;
+}
+.cluster-red {
+    background-color: #fa3a38;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0px 0px 8px 8px rgba(250, 59, 56, 0.3);
+    color: #202020;
+}
+.cluster-yellow {
+    background-color: #FFE26F;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0px 0px 8px 8px rgba(255, 226, 111, 0.3);
+    color: #202020;
+}
+.cluster-green {
+    background-color: #00B8A9;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0px 0px 8px 8px rgba(0, 184, 169, 0.3);
+    color: #202020;
+}
+.cluster-blue {
+    background-color: #118DF0;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0px 0px 8px 8px rgba(17, 141, 240, 0.3);
+    color: #202020;
+}
+.value {
+    text-align: center;
+}
+
+.predict-marker{
+    padding: 5px;
+    background-color: gold;
+    box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* styles.css */
+
+#floating-box {
+    position: fixed;
+    top: 50%;
+    left: 80%; 
+    width: 10%; 
+    background-color: #f0f0f0;
+    padding: 10px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 500;
+}
+.legend{
+    border-radius: 100%;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 3px;
+}
+.good{
+    background-color: #118DF0;
+}
+.average{
+    background-color: #00B8A9;
+}
+.bad{
+    background-color: #FFE26F;
+}
+.verybad{
+    background-color: #fa3a38;
+}
+.none{
+    background-color: gray;
+}

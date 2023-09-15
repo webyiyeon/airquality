@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 600px;
+        width: 100%;
+      }
+      .custom-marker {background-color: red;color: white;border-radius: 50%;padding: 5px;}    
+    </style>
+  </head>
+  <body>
+    <h3>지도 예시</h3>
+    <div id="map"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+      //var test = "{{test|safe}}";
+      //sconsole.log(test)
+      var air_quality = "{{air_quality|safe}}";
+      air_quality = air_quality.replace(/'/g, '"');
+      air_quality = JSON.parse(air_quality);
+
+      // 지도를 생성하고 특정 위치로 이동
+      var map = L.map('map').setView([35.5383773, 129.3113596], 12); // 울산의 위도와 경도, 확대 수준
+
+      // OpenStreetMap 타일 레이어 추가
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+          maxZoom: 18
+      }).addTo(map);        
+      var num = air_quality.length;
+      
+      // 지도에 marker 표시
+      var customIcon = L.divIcon({
+        className: 'custom-marker',
+        html: '텍스트',
+        iconSize: [30, 30]
+      });
+    
+      var marker_list = [];
+      for(let i=0; i<num; i++){
+        var item = air_quality[i];
+        // L.circleMarker([item.lat, item.lon],  { radius: 5, color: 'blue', fillColor: 'blue', fillOpacity: 1 }).addTo(map)
+        //  .bindPopup("Test").openPopup();
+        L.marker([item.lat, item.lon], { icon: customIcon }).addTo(map)
+          .bindPopup(item.markup).openPopup();
+      } 
+
+    </script>
+  </body>
+</html>
