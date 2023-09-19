@@ -6,7 +6,7 @@ String.prototype.format = function() {
 };
 
 /* 지도 생성 */
-var map = L.map('map').setView([35.52647183928, 129.31785836133], 7);
+var map = L.map('map').setView([36.34, 127.77], 7);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
@@ -120,35 +120,55 @@ function showCAI() {
 }
 
 /* 대기 예보 API 변수 및 함수 선언부 */
-var predictGroup = new L.LayerGroup();
-// console.log(predict)
-function showPredict() {
-  if (predict.length == 0){
-    return ;
+var forecastGroup = new L.LayerGroup();
+
+
+
+function showForecast(pltnt_cd, inform_date) {
+  if (pltnt_cd === "Close") {
+    map.removeLayer(forecastGroup);
+    forecastGroup.clearLayers();
+    return;
   }
-  if (map.hasLayer(predictGroup)) {
-    map.removeLayer(predictGroup);
-    predictGroup.clearLayers();
-  } else {
-    for (var i = 0; i < predict.length; i++) {
-      var item = predict[i];
-      var predictIcon = L.divIcon({
-        className: "predict-marker",
-        iconSize: [60, 40],
-        html: "<div class='marker_text'> " + item.city + "<br><span>" + item.grade + "</span></div>"
-      });
-      var predict_marker = L.marker(
-        [item.latitude, item.longitude], {
-          icon: predictIcon,
-        })
-        .bindPopup("<div> 도시:" + item.city + "</br> 대기질 예보: (" + item.grade + ")" + item.dataTime + "</div>");
-      predictGroup.addLayer(predict_marker); // 마커를 그룹에 추가합니다.
+  if (map.hasLayer(forecastGroup)) {
+    // 이미 마커가 있으면 지우기
+    map.removeLayer(forecastGroup);
+    forecastGroup.clearLayers();
+  }
+  if (forecast[pltnt_cd]) {
+    const keys = Object.keys(forecast[pltnt_cd]);
+    if (keys.includes(inform_date)){
+      var each_forecast = forecast[pltnt_cd][inform_date];
+      for (var i = 0; i < each_forecast.length; i++) {
+        var item = each_forecast[i];
+        
+        // item.grade에 따라 클래스 이름 설정
+        var gradeClassName = "";
+        if (item.grade === "좋음") {
+          gradeClassName = "good";
+        } else if (item.grade === "보통") {
+          gradeClassName = "average";
+        } else if (item.grade === "나쁨") {
+          gradeClassName = "bad";
+        } else if (item.grade === "매우 나쁨") {
+          gradeClassName = "verybad";
+        }
+        
+        var forecastIcon = L.divIcon({
+          className: "forecast-marker " + gradeClassName, // 클래스 이름 추가
+          iconSize: [60, 40],
+          html: "<div class='marker_text'> " + item.city + "<br><span>" + item.grade + "</span></div>"
+        });
+        
+        var forecast_marker = L.marker(
+          [item.latitude, item.longitude], {
+            icon: forecastIcon,
+          })
+          .bindPopup("<table> 도시:" + item.city + "</br> 통보 시간: " + item.datetime + "</table>");
+          
+        forecastGroup.addLayer(forecast_marker); // 마커를 그룹에 추가합니다.
+      }
     }
-    predictGroup.addTo(map)
+    forecastGroup.addTo(map)
   }
 }
-
-// inform 
-
-
-

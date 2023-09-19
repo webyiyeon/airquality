@@ -15,28 +15,90 @@
   </head>
   <body>
     <h3>한국 대기질 지도</h3>
-    <div>
-      <button onclick="showCAI()">실시간 대기정보</button>
-      <button onclick="showPredict()">오늘/내일/모레 대기정보</button>
-      <button disabled>실시간 공간분포</button>
-    </div>
+   
     <div id="container">
-    <div id="map">
-      <div id="floating-box">
-        <h4>통합 대기질 지수(CAI) 범례</h4>
-        <p>
-          <span class='legend good'> </span>좋음(0 ~ 50) <br>
-          <span class='legend average'></span>보통(51 ~ 100) <br>
-          <span class='legend bad'></span>나쁨(101 ~ 250) <br>
-          <span class='legend verybad'></span>매우나쁨(251 ~ ) <br> 
-          <span class='legend none'></span>데이터 없음
-        </p>
-      </div>
-    </div>
-  </div>
+      <div id="map">
+        <div id="buttonSection"> <!-- button section -->
+          <button onclick="showCAI()">실시간 대기정보</button>
+          <button onclick="toggleSelectVisibility()">오늘/내일/모레 대기정보</button>
+          <button disabled>실시간 공간분포</button>
+
+          <div id="forecastSelect" style="display: none;"> <!-- select section-->
+            <select id="pltntSelect">
+              <option value="O3">오존(O3)</option>
+              <option value="PM10">미세먼지(PM10)</option>
+              <option value="PM25">초미세먼지(PM25)</option>
+            </select>
+            <button id="today" class="forecast-button">오늘</button>
+            <button id="tomorrow" class="forecast-button">내일</button>
+            <button id="dayAfterTomorrow" class="forecast-button">모레</button>
+            <div id="forecastDate"></div>
+          </div> <!-- select section-->
+        </div> <!-- button section -->
+        
+        <div id="floating-box">
+          <h4>통합 대기질 지수(CAI) 범례</h4>
+          <p>
+            <span class='legend good'> </span>좋음(0 ~ 50) <br>
+            <span class='legend average'></span>보통(51 ~ 100) <br>
+            <span class='legend bad'></span>나쁨(101 ~ 250) <br>
+            <span class='legend verybad'></span>매우나쁨(251 ~ ) <br> 
+            <span class='legend none'></span>데이터 없음
+          </p>
+        </div> <!--#floating-box-->
+      </div> <!--#map-->
+  </div> <!--#container-->
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
     <script>
+      // JavaScript를 사용하여 오늘, 내일, 모레의 날짜를 계산합니다.
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1); // 내일 날짜
+      const dayAfterTomorrow = new Date();
+      dayAfterTomorrow.setDate(today.getDate() + 2); // 모레 날짜
+      
+      // 각 버튼에 날짜를 할당합니다.
+      document.getElementById('today').value = formatDate(today);
+      document.getElementById('tomorrow').value = formatDate(tomorrow);
+      document.getElementById('dayAfterTomorrow').value = formatDate(dayAfterTomorrow);
+
+      // 날짜를 "YYYY-MM-DD" 형식으로 포맷하는 함수
+      function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      function toggleSelectVisibility() {
+        var selectElement = document.getElementById("forecastSelect");
+        if (selectElement.style.display === "none" || selectElement.style.display === "") {
+            selectElement.style.display = "block"; // 보이게 변경
+            var firstOption = selectElement.querySelector("select").options[0]; // 첫 번째 옵션 가져오기
+            if (firstOption) {
+                var pltnt_cd = firstOption.value;
+                showForecast(pltnt_cd); // 선택된 옵션의 값을 함수에 전달
+            }
+        } else {
+            selectElement.style.display = "none"; // 가림
+            showForecast("Close");
+        }
+      }
+
+      // Select 옵션 클릭 이벤트 리스너 설정
+      var selectElement = document.getElementById("pltntSelect");
+      var buttons = document.querySelectorAll(".forecast-button");
+
+      buttons.forEach(function(button) {
+        button.addEventListener("click", function() {
+          var pltnt_cd = selectElement.value;
+          var inform_date = button.value;
+          showForecast(pltnt_cd, inform_date); // 선택한 옵션의 값을 함수에 전달
+        });
+      });
+
+
       function jsonParsing(str){
         str = str.replace(/None/g, "null");
         str = str.replace(/'/g, '"');
@@ -54,11 +116,18 @@
       var air_quality = "{{air_quality|safe}}";
       air_quality = jsonParsing(air_quality);
 
-      var predict = "{{predict|safe}}";
-      predict = jsonParsing(predict);
+      var forecast = "{{forecast|safe}}";
+      forecast = jsonParsing(forecast);
   
       var inform = "{{inform|safe}}";
       inform = jsonParsing(inform);
+
+      var latest = "{{latest|safe}}";
+      latest = new Date(latest);
+      var formatOptions = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false, minute: '2-digit' };
+      latest = new Intl.DateTimeFormat('ko-KR', formatOptions).format(latest);
+
+      document.getElementById("forecastDate").textContent = latest + " 발표자료"
     </script>
     <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
 

@@ -18,7 +18,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/chec
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-)y8t-di=tlem)z98s%9qav(s%w!mym-0l3$@vo88n20ysr&ux*'
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-)y8t-di=tlem)z98s%9qav(s%w!mym-0l3$@vo88n20ysr&ux*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['34.64.141.87']
+ALLOWED_HOSTS = ['*']
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 

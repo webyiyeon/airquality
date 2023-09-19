@@ -15,23 +15,34 @@ http://scripts.sil.org/OFL
 	src: url('././font/PretendardVariable.woff2') format('woff2-variations');
 }
 
-
+.leaflet-popup-content-wrapper{
+    padding: 10px;
+    /* width: 200px; */
+}
+.leaflet-popup-content{
+    width: 100%;
+}
+#container{
+    width: 100%;
+    height: 100%;
+}
 #map {
-    height: 900px;
+    height: 800px;
     width: 100%;
 }
 table {
     width: 100%;
     border-top: 1px solid #444444;
     border-collapse: collapse;
+    margin-bottom: 10px;
 }
 th, td {
     border-bottom: 1px solid #444444;
-    /* border-left: 1px solid #444444; */
     padding: 5px;
 }
-th {
-    background-color: aliceblue;
+.station_dist{
+    width: 100%;
+    text-align: center;
 }
 /* th:first-child, td:first-child {
     border-left: none;
@@ -58,7 +69,7 @@ th {
     font-family: 800;
 }
 .custom-cluster:hover{
-    border: 1px solid #000;
+    border: 1px solid #202020;
     margin: 0;
 }
 .custom-marker {
@@ -71,7 +82,7 @@ th {
     align-items: center;
 }
 .custom-marker:hover{
-    border: 1px solid #000;
+    border: 1px solid #202020;
     margin: 0;
 }
 .marker_text{
@@ -88,64 +99,74 @@ th {
 }
 .marker-red {
     background-color: #fa3a38;
-    border: 1px solid #fff;
-    color: #000;
+    border: 1px solid #f0f0f0;
+    color: #202020;
 }
 .marker-yellow {
     background-color: #FFE26F;
-    border: 1px solid #fff;
-    color: #000;
+    border: 1px solid #f0f0f0;
+    color: #202020;
 }
 .marker-green {
     /* background-color: #00B8A9; */
     background-color: #00B8A9;
-    border: 1px solid #fff;
-    color: #000;
+    border: 1px solid #f0f0f0;
+    color: #202020;
 }
 .marker-blue {
     background-color: #118DF0;
-    border: 1px solid #fff;
-    color: #000;
+    border: 1px solid #f0f0f0;
+    color: #202020;
 }
 .cluster-red {
     background-color: #fa3a38;
-    border: 1px solid #fff;
+    border: 1px solid #f0f0f0;
     box-shadow: 0px 0px 8px 8px rgba(250, 59, 56, 0.3);
-    color: #000;
+    color: #202020;
 }
 .cluster-yellow {
     background-color: #FFE26F;
-    border: 1px solid #fff;
+    border: 1px solid #f0f0f0;
     box-shadow: 0px 0px 8px 8px rgba(255, 226, 111, 0.3);
-    color: #000;
+    color: #202020;
 }
 .cluster-green {
     background-color: #00B8A9;
-    border: 1px solid #fff;
+    border: 1px solid #f0f0f0;
     box-shadow: 0px 0px 8px 8px rgba(0, 184, 169, 0.3);
-    color: #000;
+    color: #202020;
 }
 .cluster-blue {
     background-color: #118DF0;
-    border: 1px solid #fff;
+    border: 1px solid #f0f0f0;
     box-shadow: 0px 0px 8px 8px rgba(17, 141, 240, 0.3);
-    color: #000;
+    color: #202020;
 }
 .value {
     text-align: center;
+}
+
+.predict-marker{
+    padding: 5px;
+    background-color: gold;
+    box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* styles.css */
 
 #floating-box {
     position: fixed;
-    top: 0;
-    left: 0; 
-    width: 100%; 
+    top: 50%;
+    left: 80%; 
+    width: 10%; 
     background-color: #f0f0f0;
     padding: 10px; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 500;
 }
 .legend{
     border-radius: 100%;

@@ -19,7 +19,7 @@ from functools import reduce
 
 db = DBConnection()
 db.init_db()
-session = db.get_session()
+
 
 # Create your views here.
 # def index(request):
@@ -27,8 +27,12 @@ session = db.get_session()
 
 def index(request): 
     try:
+        session = db.get_session()
         stime = time.time() # 소요시간 측정용
-        _now = datetime.datetime.strftime(datetime.datetime.now(pytz.timezone('Asia/Seoul')) - datetime.timedelta(minutes=30), "%Y-%m-%d %H:00:00")
+        _now = datetime.datetime.now(pytz.timezone('Asia/Seoul')) - datetime.timedelta(minutes=30)
+        _yesterday = datetime.datetime.strftime(_now - datetime.timedelta(days=1), "%Y-%m-%d %H:00:00")
+        _now = datetime.datetime.strftime(_now, "%Y-%m-%d %H:00:00")
+        
 
         station_info = session.query(models.StationInfo).filter(models.StationInfo.use_yn == 'Y').all()
         df_station_info = pd.DataFrame([s.__dict__ for s in station_info])
@@ -127,20 +131,45 @@ def index(request):
 
         result = _list
 
-        df, df_info = API.predict_air(_now.split()[0])
+        # df = session.query(models.ForecastNow).filter(models.ForecastNow.datetime <= _now).all()
+        df = pd.read_sql_query(
+                sql = session.query(models.ForecastNow).filter((models.ForecastNow.datetime <= _now)&(models.ForecastNow.datetime > _yesterday)).statement,
+                con = db.engine
+            )
+        df.rename(columns={"city_nm_kr":"city"}, inplace=True)
+        
+        forecast_ = {}
+        # df, df_info = API.forecast_air(_now.split()[0])
         if len(df) != 0:
-            df = df.iloc[0:19]
+            # df = df.iloc[0:19]
             city_info = session.query(
                 models.CityInfo.city_nm_kr, models.CityInfo.latitude, models.CityInfo.longitude
             ).all()
             df_city = pd.DataFrame(city_info).rename(columns={"city_nm_kr":"city"})
             df = pd.merge(df, df_city, on="city", how="outer").reset_index()
-            predict_ = list(df.T.to_dict().values())
+            # 가장 최근 날짜만 조회 
+            latest_ = datetime.datetime.strftime(max(list(set(df["datetime"].to_list()))), "%Y-%m-%d %H:%M:%S")
+            df["datetime"] = df["datetime"].astype("str")
+            df = df.loc[df["datetime"]==latest_]
+            df["inform_date"] = df["inform_date"].astype('str')
+            grouped_dict_ = dict(iter(df.groupby('pltnt_cd')))
+
+            for code in ["O3", "PM10", "PM25"]:
+                forecast_[code] = dict(iter(grouped_dict_[code].groupby('inform_date')))
+                for inform_date in list(forecast_[code].keys()):
+                    forecast_[code][inform_date] = list(forecast_[code][inform_date].T.to_dict().values())
         else:
-            predict_ = []
+            pass
         
+        df_info = pd.read_sql_query(
+                sql = session.query(models.ForecastNowOverall).filter((models.ForecastNowOverall.datetime <= _now)&(models.ForecastNowOverall.datetime > _yesterday)).statement,
+                con = db.engine
+            )
         if len(df_info) != 0:
-            df_info["informOverall"] = df_info["informOverall"].str.replace("'", "`")
+            df_info["inform_overall"] = df_info["inform_overall"].str.replace("'", "`")
+            df_info["inform_cause"] = df_info["inform_cause"].str.replace("'", "`")
+            df_info["datetime"] = df_info["datetime"].astype('str')
+            df_info["inform_date"] = df_info["inform_date"].astype('str')
             df_info.reset_index(inplace=True)
             inform_ = list(df_info.T.to_dict().values())
         else:
@@ -148,21 +177,26 @@ def index(request):
         
         etime = time.time()
         print("소요시간:", etime - stime)
-        session.close()
+        
         return render(
             request, 
             'index.html', 
             {
                 'air_quality': result, 
                 'city_dist': city_dist_dict,
-                'predict': predict_,
+                'forecast': forecast_,
+                'latest': latest_,
                 'inform': inform_
                 }
             )
-    
+
     except Exception as e:
-        print("Failed to connect to MySQL DB", e)
+        print("Error", e)
+        session.rollback()
         return render(request, 'error.html')
+
+    finally:
+        session.close()
     
 from django.shortcuts import render
 from django.shortcuts import render
