@@ -6,7 +6,7 @@ String.prototype.format = function() {
 };
 
 /* 지도 생성 */
-var map = L.map('map').setView([36.34, 127.77], 7);
+var map = L.map('map').setView([36.8, 128], 7);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
@@ -125,6 +125,8 @@ var forecastGroup = new L.LayerGroup();
 
 
 function showForecast(pltnt_cd, inform_date) {
+  console.log(pltnt_cd)
+  console.log(inform_date)
   if (pltnt_cd === "Close") {
     map.removeLayer(forecastGroup);
     forecastGroup.clearLayers();
@@ -137,6 +139,7 @@ function showForecast(pltnt_cd, inform_date) {
   }
   if (forecast[pltnt_cd]) {
     const keys = Object.keys(forecast[pltnt_cd]);
+    // console.log(keys)
     if (keys.includes(inform_date)){
       var each_forecast = forecast[pltnt_cd][inform_date];
       for (var i = 0; i < each_forecast.length; i++) {

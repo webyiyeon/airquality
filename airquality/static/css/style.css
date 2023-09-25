@@ -6,7 +6,6 @@ This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
 http://scripts.sil.org/OFL
 */
-
 @font-face {
 	font-family: 'Pretendard Variable';
 	font-weight: 45 920;
@@ -22,22 +21,42 @@ http://scripts.sil.org/OFL
 .leaflet-popup-content{
     width: 100%;
 }
+body{
+    overflow: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #888 transparent;
+
+}
+body::-webkit-scrollbar-thumb {
+    background-color: #888;
+}
+h1{
+    text-align: center;
+    font-size: large;
+}
 #container{
-    width: 1920px;
-    height: 1080px;
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    /* overflow: hidden; */
+    background-color: lightblue;
 }
 #map {
-    height: 80%;
+    /* height: 80%; */
     width: 100%;
+    position: absolute;
+    top: 100px;
+    bottom: 60px;
+    left: 0;
 }
 #buttonSection {
     position: fixed;
-    top: 3%;
-    left: 1%;
-    width: 40%;
-    height: 10%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
     background-color: #f0f0f0;
-    padding: 20px;
+    padding: 10px;
     z-index: 500;
 }
 #floating-box {

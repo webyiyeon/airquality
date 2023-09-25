@@ -32,8 +32,9 @@ def index(request):
         _now = datetime.datetime.now(pytz.timezone('Asia/Seoul')) - datetime.timedelta(minutes=30)
         _yesterday = datetime.datetime.strftime(_now - datetime.timedelta(days=1), "%Y-%m-%d %H:00:00")
         _now = datetime.datetime.strftime(_now, "%Y-%m-%d %H:00:00")
+        print(_yesterday)
+        print(_now)
         
-
         station_info = session.query(models.StationInfo).filter(models.StationInfo.use_yn == 'Y').all()
         df_station_info = pd.DataFrame([s.__dict__ for s in station_info])
         # 불필요한 열 제거 (예: SQLAlchemy에서 자동 생성된 열)
@@ -117,7 +118,7 @@ def index(request):
                             "station_city": station_info.station_city
                         }
                     )
-                
+             
             if index_now.CAI == None:
                 air_quality_temp = session.query(
                 models.IndexNow, models.PollutantNow).join(
@@ -146,19 +147,26 @@ def index(request):
                 models.CityInfo.city_nm_kr, models.CityInfo.latitude, models.CityInfo.longitude
             ).all()
             df_city = pd.DataFrame(city_info).rename(columns={"city_nm_kr":"city"})
-            df = pd.merge(df, df_city, on="city", how="outer").reset_index()
+            df = pd.merge(df, df_city, on="city", how="outer")
             # 가장 최근 날짜만 조회 
             latest_ = datetime.datetime.strftime(max(list(set(df["datetime"].to_list()))), "%Y-%m-%d %H:%M:%S")
-            df["datetime"] = df["datetime"].astype("str")
-            df = df.loc[df["datetime"]==latest_]
-            df["inform_date"] = df["inform_date"].astype('str')
-            grouped_dict_ = dict(iter(df.groupby('pltnt_cd')))
+            latest_list = list(df["datetime"].unique())
+            if len(latest_list) > 2:
+                latest_list = sorted(latest_list, reverse=True)[:2]
+            latest_list = [dt.strftime('%Y-%m-%d %H:%M:%S') for dt in latest_list]
 
-            for code in ["O3", "PM10", "PM25"]:
+            df["datetime"] = df["datetime"].astype("str")
+            df = df.loc[df["datetime"].isin(latest_list)]
+            df["inform_date"] = df["inform_date"].astype('str')
+            # 데이터프레임을 pltnt_cd로 그룹화
+            grouped_dict_ = dict(iter(df.groupby('pltnt_cd')))
+            
+            for code in list(grouped_dict_.keys()):
                 forecast_[code] = dict(iter(grouped_dict_[code].groupby('inform_date')))
                 for inform_date in list(forecast_[code].keys()):
                     forecast_[code][inform_date] = list(forecast_[code][inform_date].T.to_dict().values())
         else:
+            latest_ = _now 
             pass
         
         df_info = pd.read_sql_query(
